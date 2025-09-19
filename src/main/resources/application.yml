@@ -3,6 +3,16 @@ spring:
     name: e-commerce-backend
   profiles:
     active: dev
+  datasource:
+    url: jdbc:mysql://${RDS_HOST:pawan-database.ckl2ey202gfr.us-east-1.rds.amazonaws.com}:${RDS_PORT:3306}/${RDS_DB:product}
+    username: ${RDS_USER:admin}
+    password: ${RDS_PASSWORD:Password1234#}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+      show-sql: true
 server:
   servlet:
     context-path: /api
