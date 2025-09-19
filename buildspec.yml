@@ -9,27 +9,22 @@ env:
 phases:
   install:
     runtime-versions:
-      java: corretto18
+      java: corretto11
       docker: 20
     commands:
-      - echo Installing Java 18...
-      - amazon-linux-extras enable corretto18
-      - yum install -y java-18-amazon-corretto-devel
-      - java -version
-      - echo "Checking Maven..."
+      - echo "Installing Maven..."
       - mvn -version
-      - docker --version
-      - echo Logging in to Amazon ECR...
-      - aws --version
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
 
   pre_build:
     commands:
-      - echo Cleaning and packaging application...
-      - mvn clean package -DskipTests
+      - echo "Logging in to Amazon ECR..."
+      - aws --version
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
 
   build:
     commands:
+      - echo "Building Maven project..."
+      - mvn clean package -DskipTests
       - echo "Building Docker image..."
       - docker build -t backend .
       - docker tag backend:latest $ECR_REPO_URI:$IMAGE_TAG
