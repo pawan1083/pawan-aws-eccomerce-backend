@@ -1,0 +1,40 @@
+version: 0.2
+
+env:
+  variables:
+    AWS_REGION: us-east-1                  # your AWS region
+    ECR_REPO_URI: 230027225622.dkr.ecr.us-east-1.amazonaws.com/pawan/product-config
+    IMAGE_TAG: latest
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto18
+      docker: 20
+    commands:
+      - echo "Installing Maven..."
+      - mvn -version
+
+  pre_build:
+    commands:
+      - echo "Logging in to Amazon ECR..."
+      - aws --version
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
+
+  build:
+    commands:
+      - echo "Building Maven project..."
+      - mvn clean package -DskipTests
+      - echo "Building Docker image..."
+      - docker build -t backend .
+      - docker tag backend:latest $ECR_REPO_URI:$IMAGE_TAG
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image to ECR..."
+      - docker push $ECR_REPO_URI:$IMAGE_TAG
+      - echo "Build and push completed successfully!"
+
+artifacts:
+  files:
+    - target/*.jar
