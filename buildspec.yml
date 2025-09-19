@@ -4,7 +4,7 @@ env:
   variables:
     AWS_REGION: us-east-1                  # your AWS region
     ECR_REPO_URI: 230027225622.dkr.ecr.us-east-1.amazonaws.com/pawan/product-config
-    IMAGE_TAG: latest
+    IMAGE_TAG: $(date +%Y%m%d%H%M%S)
 
 phases:
   install:
