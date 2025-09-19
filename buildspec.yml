@@ -36,10 +36,13 @@ phases:
       - echo "Pushing Docker image to ECR..."
       - docker push $ECR_REPO_URI:$IMAGE_TAG
       - echo "Build and push completed successfully!"
+      - echo "Creating imagedefinitions.json for ECS deploy..."
+      - printf '[{"name":"product-config","imageUri":"%s:%s"}]' $ECR_REPO_URI $IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 
 artifacts:
   files:
-    - target/*.jar
+    - imagedefinitions.json
 
 cache:
   paths:
