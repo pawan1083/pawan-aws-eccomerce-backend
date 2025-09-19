@@ -22,7 +22,9 @@ phases:
       - echo "IMAGE_TAG=$IMAGE_TAG"
       - aws --version
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
-
+      # ---- Docker Hub login ----
+      - echo "Logging in to Docker Hub..."
+      - echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
   build:
     commands:
       - echo "Building Maven project..."
