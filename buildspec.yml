@@ -10,10 +10,11 @@ phases:
   install:
     runtime-versions:
       java: corretto11
-      docker: 20
     commands:
       - echo "Installing Maven..."
       - mvn -version
+      - aws --version
+      - docker --version
 
   pre_build:
     commands:
