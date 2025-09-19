@@ -12,19 +12,24 @@ phases:
       java: corretto18
       docker: 20
     commands:
-      - echo "Installing Maven..."
+      - echo Installing Java 18...
+      - amazon-linux-extras enable corretto18
+      - yum install -y java-18-amazon-corretto-devel
+      - java -version
+      - echo "Checking Maven..."
       - mvn -version
-
-  pre_build:
-    commands:
-      - echo "Logging in to Amazon ECR..."
+      - docker --version
+      - echo Logging in to Amazon ECR...
       - aws --version
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPO_URI
 
+  pre_build:
+    commands:
+      - echo Cleaning and packaging application...
+      - mvn clean package -DskipTests
+
   build:
     commands:
-      - echo "Building Maven project..."
-      - mvn clean package -DskipTests
       - echo "Building Docker image..."
       - docker build -t backend .
       - docker tag backend:latest $ECR_REPO_URI:$IMAGE_TAG
@@ -38,3 +43,7 @@ phases:
 artifacts:
   files:
     - target/*.jar
+
+cache:
+  paths:
+    - '/root/.m2/**/*'
