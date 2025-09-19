@@ -1,5 +1,5 @@
 # -------- Stage 1: Build the Spring Boot app --------
-FROM maven:3.9.9-eclipse-temurin-17 AS build
+FROM public.ecr.aws/docker/library/maven:3.9.9-eclipse-temurin-17
 WORKDIR /app
 
 # Copy pom.xml and download dependencies (to leverage Docker cache)
